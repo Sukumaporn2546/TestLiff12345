@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0,viewport-fit=cover">
   <title>My LIFF app</title>
   <link rel="stylesheet" href="css/style.css" media="all">
 </head>
+
 <body>
   <p id="os"><b>OS:</b> </p>
   <p id="language"><b>Language:</b> </p>
@@ -30,6 +32,7 @@
   <p><a href="liff/path/?param=9">Link to Path</a></p>
 
   <button id="btnMsg" onclick="sendMsg()">Send Message</button>
+  <button id="btnFlexMsg" onclick="sendFlexMsg()">Send Flex Message</button>
   <button id="btnShare" onclick="shareMsg()">Share Target Picker</button>
   <button onclick="openWindow()">Open Window</button>
   <button id="btnScanCode" onclick="scanCode()">Scan Code</button>
@@ -95,6 +98,30 @@
       }
     }
 
+    var globalUserid;
+    async function sendFlexMessage() {
+      try {
+        if (!globalUserid) {
+          const profile = await liff.getProfile();
+          globalUserid = profile.userId;
+        }
+        const uri = "https://fn0lpgjp-3001.asse.devtunnels.ms";
+        const response = await fetch(`${uri}/api/v1/sendflexmessage/${globalUserid}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const result = await response.json();
+        console.log("ส่งข้อความสำเร็จ:", result);
+        return result;
+      } catch (error) {
+        console.error("เกิดข้อผิดพลาดในการส่งข้อความ:", error);
+      }
+    }
     async function main() {
       alert("LINE Developers x Skooldio")
       await liff.init({ liffId: "2007030957-Rj48MPo0" })
@@ -107,4 +134,5 @@
     main()
   </script>
 </body>
+
 </html>
